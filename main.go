@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/lrstanley/go-ytdlp"
 	"github.com/seidigapbar/beatdlp/db"
 	"github.com/seidigapbar/beatdlp/downloader"
 	"github.com/seidigapbar/beatdlp/model"
@@ -30,9 +31,9 @@ func main() {
 	}
 
 	beatmaker := model.Beatmaker{
-		Id: "erlax",
+		Id:   "erlax",
 		Name: "Erlax",
-		Url: "UCkCsd5HkmqYZEMm6VmBd-Yg",
+		Url:  "UCkCsd5HkmqYZEMm6VmBd-Yg",
 	}
 
 	db.InsertBeatmaker(sqliteDB, &beatmaker)
@@ -56,5 +57,15 @@ func main() {
 	for _, instrumental := range dbInstrumentals {
 		log.Printf("Instrumental: %v", instrumental)
 	}
-}
 
+	ytDlp := ytdlp.New()
+
+	if len(dbInstrumentals) > 0 {
+		result, err := downloader.Download(*dbInstrumentals[0], ytDlp)
+		if err != nil {
+			log.Printf("Error downloading instrumental: %v", err)
+		}
+
+		fmt.Printf("Downloaded instrumental: %v", result)
+	}
+}
